@@ -4,16 +4,26 @@ import sqlite3
 connection = sqlite3.connect('my_database.db')
 cursor = connection.cursor()
 
-# Создаем представление для активных пользователей
-cursor.execute('CREATE VIEW ActiveUsers AS SELECT * FROM Users WHERE is_active = 1')
+# Создаем таблицу Users
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS Users (
+        id INTEGER PRIMARY KEY,
+        username TEXT NOT NULL,
+        email TEXT NOT NULL,
+        age INTEGER,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+''')
 
-# Выбираем активных пользователей
-cursor.execute('SELECT * FROM ActiveUsers')
-active_users = cursor.fetchall()
+# Создаем триггер для обновления времени создания при вставке новой записи
+cursor.execute('''
+    CREATE TRIGGER IF NOT EXISTS update_created_at
+    AFTER INSERT ON Users
+    BEGIN
+        UPDATE Users SET created_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
+    END;
+''')
 
-# Выводим результаты
-for user in active_users:
-    print(user)
-
-# Закрываем соединение
+# Сохраняем изменения и закрываем соединение
+connection.commit()
 connection.close()
