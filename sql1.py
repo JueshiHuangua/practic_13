@@ -4,13 +4,15 @@ import sqlite3
 connection = sqlite3.connect('my_database.db')
 cursor = connection.cursor()
 
-# Создаем подготовленный запрос
-query = 'SELECT * FROM Users WHERE age > ?'
-cursor.execute(query, (25,))
-users = cursor.fetchall()
+# Создаем представление для активных пользователей
+cursor.execute('CREATE VIEW ActiveUsers AS SELECT * FROM Users WHERE is_active = 1')
+
+# Выбираем активных пользователей
+cursor.execute('SELECT * FROM ActiveUsers')
+active_users = cursor.fetchall()
 
 # Выводим результаты
-for user in users:
+for user in active_users:
     print(user)
 
 # Закрываем соединение
