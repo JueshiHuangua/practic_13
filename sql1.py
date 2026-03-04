@@ -3,25 +3,15 @@ import sqlite3
 connection = sqlite3.connect('my_database.db')
 cursor = connection.cursor()
 
-cursor.execute('SELECT COUNT(*) FROM Users')
-total_users = cursor.fetchone()[0]
-print('Общее количество пользователей:', total_users)
+cursor.execute('''
+    SELECT username, age 
+    FROM Users 
+    WHERE age = (SELECT MAX(age) FROM Users)
+''')
+oldest_users = cursor.fetchall()
 
-cursor.execute('SELECT SUM(age) FROM Users')
-total_age = cursor.fetchone()[0]
-print('Общая сумма возрастов пользователей:', total_age)
-
-cursor.execute('SELECT AVG(age) FROM Users')
-average_age = cursor.fetchone()[0]
-print('Средний возраст пользователей:', average_age)
-
-cursor.execute('SELECT MIN(age) FROM Users')
-min_age = cursor.fetchone()[0]
-print('Минимальный возраст среди пользователей:', min_age)
-
-cursor.execute('SELECT MAX(age) FROM Users')
-max_age = cursor.fetchone()[0]
-print('Максимальный возраст среди пользователей:', max_age)
+for user in oldest_users:
+    print(user)
 
 connection.commit()
 connection.close()
