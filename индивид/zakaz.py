@@ -21,10 +21,14 @@ class Ui_Dialog(object):
         self.label = QtWidgets.QLabel(Dialog)
         self.label.setObjectName("label")
         self.horizontalLayout.addWidget(self.label)
-        self.lineEdit = QtWidgets.QLineEdit(Dialog)
-        self.lineEdit.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.lineEdit.setObjectName("lineEdit")
-        self.horizontalLayout.addWidget(self.lineEdit)
+        
+        self.dateEdit = QtWidgets.QDateEdit(Dialog)
+        self.dateEdit.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.dateEdit.setObjectName("dateEdit")
+        self.dateEdit.setCalendarPopup(True)
+        self.dateEdit.setDate(QtCore.QDate.currentDate())
+        self.horizontalLayout.addWidget(self.dateEdit)
+        
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
