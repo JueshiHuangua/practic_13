@@ -45,6 +45,16 @@ class main_window(QWidget):
 
     def open_update_mebel_form(self):
         self.mebel_form = mebel_window(self)
+        mebel_data = self.data[self.ui.tableWidget.currentRow()]
+        self.mebel_form.id = mebel_data[0]
+
+        self.mebel_form.ui.lineEdit.setText(str(mebel_data[1]))
+        self.mebel_form.ui.lineEdit_2.setText(str(mebel_data[2]))
+        self.mebel_form.ui.spinBox.setValue(int(mebel_data[3]))
+        self.mebel_form.ui.lineEdit_3.setText(str(mebel_data[4]))
+        self.mebel_form.ui.lineEdit_4.setText(str(mebel_data[5]))
+        self.mebel_form.ui.doubleSpinBox.setValue(float(mebel_data[6]))
+        self.mebel_form.ui.lineEdit_5.setText(str(mebel_data[7]))
         self.mebel_form.exec()
 
 class auth_window(QWidget):
