@@ -10,6 +10,7 @@ class main_window(QWidget):
         QWidget.__init__(self, parent)
         self.ui = main_interface()
         self.ui.setupUi(self)
+        self.setWindowIcon(QIcon('icon.png'))
 
         self.read_furniture()
 
