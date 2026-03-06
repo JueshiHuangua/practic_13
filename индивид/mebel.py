@@ -74,6 +74,7 @@ class Ui_Dialog(object):
         self.doubleSpinBox = QtWidgets.QDoubleSpinBox(Dialog)
         self.doubleSpinBox.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.doubleSpinBox.setObjectName("doubleSpinBox")
+        self.doubleSpinBox.setMaximum(9999999.99)
         self.horizontalLayout_6.addWidget(self.doubleSpinBox)
         self.verticalLayout.addLayout(self.horizontalLayout_6)
         self.horizontalLayout_7 = QtWidgets.QHBoxLayout()

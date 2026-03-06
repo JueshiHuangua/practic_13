@@ -41,6 +41,7 @@ class main_window(QWidget):
 
     def open_add_mebel_form(self):
         self.mebel_form = mebel_window(self)
+        self.mebel_form.ui.buttonBox.accepted.connect(self.mebel_form.create_mebel)
         self.mebel_form.exec()
 
     def open_update_mebel_form(self):
@@ -55,6 +56,8 @@ class main_window(QWidget):
         self.mebel_form.ui.lineEdit_4.setText(str(mebel_data[5]))
         self.mebel_form.ui.doubleSpinBox.setValue(float(mebel_data[6]))
         self.mebel_form.ui.lineEdit_5.setText(str(mebel_data[7]))
+
+        self.mebel_form.ui.buttonBox.accepted.connect(self.mebel_form.update_mebel)
         self.mebel_form.exec()
 
 class auth_window(QWidget):
@@ -81,13 +84,13 @@ class mebel_window(QDialog):
 
     def create_mebel(self):
         mebel_data = [
-        self.ui.lineEdit.text(),
-        self.ui.lineEdit_2.currentText(),
-        self.ui.spinBox.value(),
-        self.ui.lineEdit_3.text(),
-        self.ui.lineEdit_4.text(),
-        self.ui.doubleSpinBox.value(),
-        self.ui.lineEdit_5.text(),
+            self.ui.lineEdit.text(),
+            self.ui.lineEdit_2.text(),
+            self.ui.spinBox.value(),
+            self.ui.lineEdit_3.text(),
+            self.ui.lineEdit_4.text(),
+            self.ui.doubleSpinBox.value(),
+            self.ui.lineEdit_5.text(),
         ]
 
         if any([item == '' for item in mebel_data]):
@@ -98,17 +101,49 @@ class mebel_window(QDialog):
 
         if q == QMessageBox.Ok:
             try:
-            cursor.execute('INSERT INTO мебель VALUES(?, ?, ?, ?, ?, ?, ?)', mebel_data)
-            conn.commit()
+                cursor.execute('INSERT INTO мебель(название, страна_изготовитель, количество_предметов, материал, цвет, цена, тип) VALUES(?, ?, ?, ?, ?, ?, ?)', mebel_data)
+                conn.commit()
 
-            auth_form.main_form.read_furniture()
+                auth_form.main_form.read_furniture()
 
-            QMessageBox.information(self, 'Действие выполнено', 'Мебель была добавлена', QMessageBox.Ok)
-            self.accept()
+                QMessageBox.information(self, 'Действие выполнено', 'Мебель была добавлена', QMessageBox.Ok)
+                self.accept()
+                return
+
+            except:
+                QMessageBox.critical(self, 'Действие не выполнено', 'Ошибка добавления мебели', QMessageBox.Ok)
+
+    def update_mebel(self):
+        mebel_data = [
+            self.ui.lineEdit.text(),
+            self.ui.lineEdit_2.text(),
+            self.ui.spinBox.value(),
+            self.ui.lineEdit_3.text(),
+            self.ui.lineEdit_4.text(),
+            self.ui.doubleSpinBox.value(),
+            self.ui.lineEdit_5.text(),
+            self.id
+        ]
+
+        if any([item == '' for item in mebel_data]):
+            QMessageBox.critical(self, 'Действие не выполнено', 'Заполните поля', QMessageBox.Ok)
             return
 
-        except:
-            QMessageBox.critical(self, 'Действие не выполнено', 'Ошибка добавления мебели', QMessageBox.Ok)
+        q = QMessageBox.question(self, 'Подтвердите действие', 'Вы действительно хотите изменить мебель?', QMessageBox.Ok | QMessageBox.Cancel)
+
+        if q == QMessageBox.Ok:
+            try:
+                cursor.execute('UPDATE мебель SET название = ?, страна_изготовитель = ?, количество_предметов = ?, материал = ?, цвет = ?, цена = ?, тип = ? WHERE код_продукции = ?', mebel_data)
+                conn.commit()
+
+                auth_form.main_form.read_furniture()
+
+                QMessageBox.information(self, 'Действие выполнено', 'Мебель была изменена', QMessageBox.Ok)
+                self.accept()
+                return
+
+            except:
+                QMessageBox.critical(self, 'Действие не выполнено', 'Ошибка изменения мебели', QMessageBox.Ok)
 
 app = QApplication(sys.argv)
 conn = sqlite3.connect('furniture.db')
