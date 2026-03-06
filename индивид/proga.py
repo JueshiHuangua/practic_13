@@ -11,6 +11,14 @@ class main_window(QWidget):
         self.ui = main_interface()
         self.ui.setupUi(self)
 
+        self.read_furniture()
+
+    def read_partners(self):
+        self.ui.tableWidget.setRowCount(0)
+        cursor.execute('SELECT * FROM Partners')
+        self.partners_data = cursor.fetchall()
+
+
 app = QApplication(sys.argv)
 conn = sqlite3.connect('furniture.db')
 cursor = conn.cursor()
@@ -20,3 +28,4 @@ main_form.show()
 sys.exit(app.exec_())
 cursor.close()
 conn.close()
+
