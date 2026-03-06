@@ -5,6 +5,7 @@ import sys
 import sqlite3
 from main import Ui_Form as main_interface
 from authoris import Ui_Dialog as auth_interface
+from mebel import Ui_Dialog as mebel_interface
 
 class main_window(QWidget):
     def __init__(self, parent=None):
@@ -14,6 +15,8 @@ class main_window(QWidget):
         self.setWindowIcon(QIcon('icon.png'))
 
         self.read_furniture()
+        self.ui.pushButton.clicked.connect(self.open_add_mebel_form)
+        self.ui.tableWidget.itemClicked.connect(self.open_update_mebel_form)
 
     def read_furniture(self):
         self.ui.tableWidget.setRowCount(0)
@@ -36,6 +39,14 @@ class main_window(QWidget):
             self.ui.tableWidget.setItem(row, 0, item)
         self.ui.tableWidget.resizeRowsToContents()
 
+    def open_add_mebel_form(self):
+        self.mebel_form = mebel_window(self)
+        self.mebel_form.exec()
+
+    def open_update_mebel_form(self):
+        self.mebel_form = mebel_window(self)
+        self.mebel_form.exec()
+
 class auth_window(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
@@ -51,6 +62,12 @@ class auth_window(QWidget):
             self.close()
             self.main_form = main_window()
             self.main_form.show()
+
+class mebel_window(QDialog):
+    def __init__(self, parent=None):
+        QDialog.__init__(self, parent)
+        self.ui = mebel_interface()
+        self.ui.setupUi(self)
 
 app = QApplication(sys.argv)
 conn = sqlite3.connect('furniture.db')
