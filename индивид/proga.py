@@ -4,6 +4,7 @@ from PyQt5.QtGui import *
 import sys
 import sqlite3
 from main import Ui_Form as main_interface
+from authoris import Ui_Dialog as auth_interface
 
 class main_window(QWidget):
     def __init__(self, parent=None):
@@ -35,13 +36,28 @@ class main_window(QWidget):
             self.ui.tableWidget.setItem(row, 0, item)
         self.ui.tableWidget.resizeRowsToContents()
 
+class auth_window(QWidget):
+    def __init__(self, parent=None):
+        QWidget.__init__(self, parent)
+        self.ui = auth_interface()
+        self.ui.setupUi(self)
+        self.setWindowIcon(QIcon('icon.png'))
+        self.ui.pushButton.clicked.connect(self.check)
+
+    def check(self):
+        log = self.ui.lineEdit.text()
+        pas = self.ui.lineEdit_2.text()
+        if log == 'admin' and pas == '1234567':
+            self.close()
+            self.main_form = main_window()
+            self.main_form.show()
 
 app = QApplication(sys.argv)
 conn = sqlite3.connect('furniture.db')
 cursor = conn.cursor()
-main_form = main_window()
 
-main_form.show()
+auth_form = auth_window()
+auth_form.show()
 sys.exit(app.exec_())
 cursor.close()
 conn.close()
