@@ -79,6 +79,37 @@ class mebel_window(QDialog):
         self.ui = mebel_interface()
         self.ui.setupUi(self)
 
+    def create_mebel(self):
+        mebel_data = [
+        self.ui.lineEdit.text(),
+        self.ui.lineEdit_2.currentText(),
+        self.ui.spinBox.value(),
+        self.ui.lineEdit_3.text(),
+        self.ui.lineEdit_4.text(),
+        self.ui.doubleSpinBox.value(),
+        self.ui.lineEdit_5.text(),
+        ]
+
+        if any([item == '' for item in mebel_data]):
+            QMessageBox.critical(self, 'Действие не выполнено', 'Заполните поля', QMessageBox.Ok)
+            return
+
+        q = QMessageBox.question(self, 'Подтвердите действие', 'Вы действительно хотите добавить мебель?', QMessageBox.Ok | QMessageBox.Cancel)
+
+        if q == QMessageBox.Ok:
+            try:
+            cursor.execute('INSERT INTO мебель VALUES(?, ?, ?, ?, ?, ?, ?)', mebel_data)
+            conn.commit()
+
+            auth_form.main_form.read_furniture()
+
+            QMessageBox.information(self, 'Действие выполнено', 'Мебель была добавлена', QMessageBox.Ok)
+            self.accept()
+            return
+
+        except:
+            QMessageBox.critical(self, 'Действие не выполнено', 'Ошибка добавления мебели', QMessageBox.Ok)
+
 app = QApplication(sys.argv)
 conn = sqlite3.connect('furniture.db')
 cursor = conn.cursor()
